@@ -1,2 +1,2 @@
 # New Project
-This project created for Ekart
+This project created for Ekart.
