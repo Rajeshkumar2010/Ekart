@@ -159,7 +159,7 @@ const Product = () => {
               >
                 <Card
                   sx={{ maxWidth: 400, maxHeight:600 }}
-                  style={{ marginLeft: "20px", marginBottom: "10px",color:"white", display:"flex",alignItems:'center',position:'relative' }}
+                  style={{ marginLeft: "20px", marginBottom: "1`0px",color:"white", display:"flex",alignItems:'center',position:'relative' }}
                 >
                   <CardMedia
                     component="img"

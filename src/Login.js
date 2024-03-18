@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { json, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 const Login = () => {
   const data = { email: "", password: "" };
   const [inputData, setInputData] = useState(data);
-  const [localData] = useState([]);
+  const [localData, setlocaldata] = useState([]);
+
   // const [flag, setFlag] = useState(false);
   const navigate = useNavigate();
 
@@ -32,24 +34,29 @@ const Login = () => {
   }
   const handleSubmit = (e) => {
     e.preventDefault();
-    const SighUpUser = localStorage.getItem("values");
+    const values = JSON.parse(localStorage.getItem("values")) || [];
+    // const SighUpUser = localStorage.getItem("values");
     // setlocalData(SighUpUser);
-    const parsValue = JSON.parse(SighUpUser);
-    console.log("inputData", inputData);
-    console.log("parsValue", parsValue);
-    if (
-      inputData.email === parsValue.email &&
-      inputData.password === parsValue.password
-    ) {
+    // const parsValue = JSON.parse(SighUpUser);
+    // console.log("inputData", inputData);
+    // console.log("parsValue", parsValue);
+    const matchingUser = values.filter(
+      (user) =>
+        user.name === inputData.name && user.password === inputData.password
+    );
+
+    console.log(matchingUser);
+
+    if (matchingUser) {
       console.log(" Matched");
-      alert("Login Successfuly");
+      toast("Login Successfuly");
       // setFlag(true);
       setTimeout(() => {
         navigate("/Product");
-      }, 2000);
+      }, 3000);
     } else {
-      console.log(SighUpUser);
-      console.log(parsValue.email);
+      // console.log(SighUpUser);
+      // console.log(parsValue.email);
       console.log("not-matched");
       alert("Data-Not Matched");
       setInputData(data);
@@ -57,6 +64,7 @@ const Login = () => {
   };
   return (
     <>
+      <ToastContainer />
       {/* <pre>     
         {flag ? (
           <h2 className="ui-defined" style={{ color: "yellow" }}>
@@ -66,6 +74,7 @@ const Login = () => {
           ""
         )}
       </pre> */}
+
       <form
         onSubmit={handleSubmit}
         className="container"
