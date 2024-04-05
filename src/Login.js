@@ -1,95 +1,60 @@
-import React, { useEffect, useState } from "react";
-import { json, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import bcrypt from "bcryptjs-react";
 
 const Login = () => {
   const data = { email: "", password: "" };
   const [inputData, setInputData] = useState(data);
-  const [localData, setlocaldata] = useState([]);
-
-  // const [flag, setFlag] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const Data = localStorage.getItem("myValue");
-  //   const value1 = JSON.parse(Data);
-  //   setlocalData(value1);
-
-  //   // console.log(inputData);
-  //   // console.log(value);
-  // }, []);
-  // console.log(inputData.Email);
-  // console.log(localData.Email);
-  const handledata = (e) => {
+  const handleData = (e) => {
     const { name, value } = e.target;
     setInputData({ ...inputData, [name]: value });
-    console.log(inputData);
-
-    // console.log(inputData.data.name);
   };
 
-  function check() {
-    // return inputData.map((r) => {
-    // });
-  }
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Basic validation to check if email and password are provided
+    if (!inputData.email || !inputData.password) {
+      toast.error("Please provide both email and password");
+      return;
+    }
+
     const values = JSON.parse(localStorage.getItem("values")) || [];
-    // const SighUpUser = localStorage.getItem("values");
-    // setlocalData(SighUpUser);
-    // const parsValue = JSON.parse(SighUpUser);
-    // console.log("inputData", inputData);
-    // console.log("parsValue", parsValue);
-    const matchingUser = values.filter(
+
+    const matchingUser = values.find(
       (user) =>
-        user.name === inputData.name && user.password === inputData.password
+        user.email === inputData.email &&
+        bcrypt.compareSync(inputData.password, user.password)
     );
 
-    console.log(matchingUser);
-
     if (matchingUser) {
-      console.log(" Matched");
-      toast("Login Successfuly");
-      // setFlag(true);
+      toast.success("Login successful");
       setTimeout(() => {
         navigate("/Product");
-      }, 3000);
+      }, 2000);
     } else {
-      // console.log(SighUpUser);
-      // console.log(parsValue.email);
-      console.log("not-matched");
-      alert("Data-Not Matched");
-      setInputData(data);
+      toast.error("Invalid email or password");
     }
   };
+
   return (
     <>
-      <ToastContainer />
-      {/* <pre>     
-        {flag ? (
-          <h2 className="ui-defined" style={{ color: "yellow" }}>
-            Hello{inputData.name},you have Registered successfully
-          </h2>
-        ) : (
-          ""
-        )}
-      </pre> */}
-
       <form
         onSubmit={handleSubmit}
         className="container"
         style={{
           display: "flex",
-
-          // justifyContent: "center",
-          // justifyItems: "center",
           flexDirection: "column",
           marginTop: "210px",
           backgroundColor: "#012",
           height: "auto",
           width: "250px",
           padding: "10px",
-          borderRadius: "8px ",
+          borderRadius: "8px",
         }}
       >
         <div className="header">
@@ -97,7 +62,7 @@ const Login = () => {
             style={{
               color: "white",
               textAlign: "center",
-              fontFamily: "roboto mono  ",
+              fontFamily: "roboto mono",
             }}
           >
             LogIn
@@ -105,28 +70,26 @@ const Login = () => {
         </div>
         <div>
           <input
-            type="text"
-            placeholder="@Email"
+            type="email"
+            placeholder="Email"
             name="email"
             value={inputData.email}
-            onChange={handledata}
+            onChange={handleData}
           />
           <br />
           <br />
-
           <input
-            type="passWord"
-            placeholder="PassWord"
+            type="password"
+            placeholder="Password"
             name="password"
             value={inputData.password}
-            onChange={handledata}
+            onChange={handleData}
           />
           <br />
           <br />
-          <a href="/" class="active">
+          <a href="/" className="active">
             <i>
-              {" "}
-              <u>Click to Sighup</u>
+              <u>Click to Signup</u>
             </i>
           </a>
         </div>
@@ -138,6 +101,7 @@ const Login = () => {
           Submit
         </button>
       </form>
+      <ToastContainer />
     </>
   );
 };

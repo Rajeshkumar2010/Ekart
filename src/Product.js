@@ -10,16 +10,23 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import Form from "react-bootstrap/Form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const Product = () => {
   const [value, setData] = useState([]);
+  const [flag, setFlag] = useState(false);
+  const [searched, setSearched] = useState("");
+  const [search, setSearch] = useState([]);
 
-  const [jewelery, setJewelery] = useState([]);
   // const navigate = useNavigate();
   useEffect(() => {
     axios.get("https://fakestoreapi.com/products").then((res) => {
       setData(res.data);
+      // setData1(res.data.title);
       console.log(res.data);
+      // console.log(value1);
     });
   }, []);
   // const Id = useParams();
@@ -82,6 +89,19 @@ const Product = () => {
   // const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
   //   setAnchorElUser(event.currentTarget);
   // };
+  const HandleClick1 = () => {
+    console.log("hello bhai");
+  };
+  const handleChange = (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    setSearch(searchTerm);
+    const filteredProducts = value.filter((product) =>
+      product.title.toLowerCase().includes(searchTerm)
+    );
+    setSearched(filteredProducts);
+    console.log(setSearched(filteredProducts));
+    setFlag(true);
+  };
 
   return (
     <div>
@@ -104,7 +124,28 @@ const Product = () => {
                 <span className="navbar-toggler-icon"></span>
               </button>
 
-              <div className="collapse navbar-collapse" id="navbarNav">
+              <div className="collapse navbar-collapse " id="navbarNav">
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Form.Control
+                    placeholder="search"
+                    className="mb-3"
+                    type="search"
+                    value={search}
+                    onChange={handleChange}
+                  />
+                  <i
+                    onClick={HandleClick1}
+                    className="fas fa-search"
+                    style={{ marginLeft: "5px" }}
+                  ></i>
+                </div>
+
                 <ul className="navbar-nav mx-5" style={{ cursor: "pointer" }}>
                   <li className="nav-item mx-5">
                     <a className="nav-link active" aria-current="page" href="/">
@@ -135,66 +176,135 @@ const Product = () => {
               </div>
             </div>
           </nav>
+          {/* {flag? :} */}
 
           <Grid
             container
             // spacing={0}
             style={{
-              backgroundColor:"#012",
-             
+              backgroundColor: "#012",
+
               gap: "10px",
               display: "flex",
-              flexDirection: "row",
+              // flexDirection: "row",
               justifyContent: "center",
             }}
           >
-            {value.map((result, id) => (
-              <Grid
-                item={true}
-                // xs={12}
-                // ms={4}
-                sm={3}
-                key={id}
-                style={{ margin:'20px' ,overflow: "hidden" }}
-              >
-                <Card
-                  sx={{ maxWidth: 400, maxHeight:600 }}
-                  style={{ marginLeft: "20px", marginBottom: "1`0px",color:"white", display:"flex",alignItems:'center',position:'relative' }}
-                >
-                  <CardMedia
-                    component="img"
-                    alt="green iguana"
-                    height="250"
-                    image={result.image}
-                    style={{
-                      // backgroundColor: "black",
-                      // borderRadius: "10px",
-                      objectFit: "contain",
-                      backgroundRepeat: "no-repeat  ",
-                    }}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h6" component="div">
-                      {`${result.title.slice(0, 15)}...`}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {`${result.description.slice(0, 25)}...`}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      onClick={() => {
-                        HandleClick(result.id);
+            {flag
+              ? searched.map((result, id) => (
+                  <Grid
+                    item={true}
+                    xs={12}
+                    ms={4}
+                    sm={3}
+                    key={id}
+                    style={{ margin: "20px" }}
+                  >
+                    <Card
+                      sx={{ maxWidth: 400 }}
+                      style={{
+                        // marginLeft: "20px",
+                        // marginBottom: "10px",
+                        // color: "white",
+                        color: "white",
+                        border: "1px solid #ccc",
+                        borderRadius: "10px",
                       }}
-                      // key={result.id}
-                      size="small"
                     >
-                      Add To Cart
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
+                      <CardMedia
+                        component="img"
+                        alt="Product Image"
+                        height="250"
+                        image={result.image}
+                        style={{
+                          objectFit: "contain",
+                          // backgroundRepeat: "no-repeat  ",
+                        }}
+                      />
+                      <CardContent>
+                        <Typography
+                          gutterBottom
+                          variant="h5"
+                          color="black"
+                          component="div"
+                        >
+                          {`${result.title.slice(0, 15)}...`}
+                        </Typography>
+                        {/* <Typography variant="body2" color="text.secondary">
+              {`${result.description.slice(0, 25)}..`}
+            </Typography> */}
+                      </CardContent>
+                      <CardActions>
+                        <Button
+                          onClick={() => {
+                            HandleClick(result.id);
+                          }}
+                          // key={result.id}
+                          size="small"
+                        >
+                          Add To Cart
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))
+              : value.map((result, id) => (
+                  <Grid
+                    item={true}
+                    xs={12}
+                    ms={4}
+                    sm={3}
+                    key={id}
+                    style={{ margin: "20px" }}
+                  >
+                    <Card
+                      sx={{ maxWidth: 400 }}
+                      style={{
+                        // marginLeft: "20px",
+                        // marginBottom: "10px",
+                        // color: "white",
+                        color: "white",
+                        border: "1px solid #ccc",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        alt="Product Image"
+                        height="250"
+                        image={result.image}
+                        style={{
+                          objectFit: "contain",
+                          // backgroundRepeat: "no-repeat  ",
+                        }}
+                      />
+                      <CardContent>
+                        <Typography
+                          gutterBottom
+                          variant="h5"
+                          color="black"
+                          component="div"
+                        >
+                          {`${result.title.slice(0, 15)}...`}
+                        </Typography>
+                        {/* <Typography variant="body2" color="text.secondary">
+            {`${result.description.slice(0, 25)}..`}
+          </Typography> */}
+                      </CardContent>
+                      <CardActions>
+                        <Button
+                          onClick={() => {
+                            HandleClick(result.id);
+                          }}
+                          // key={result.id}
+                          size="small"
+                        >
+                          Add To Cart
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))}
           </Grid>
           {/* </Container> */}
         </div>

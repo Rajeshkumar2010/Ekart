@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -7,75 +7,65 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { Fab } from "@mui/material";
-// import FavoriteIcon from "@mui/icons-material/Favorite
+import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const Addcart = () => {
-  const [addKart, setAddKart] = useState([]);
+  const [addKart, setAddKart] = useState({});
   const [quantity, setQuantity] = useState(1);
 
-  // const { Id } = useParams();
-  // let Id1 = Id.id;
-  // console.log(Id);
   const location = useLocation();
-  // console.log(location.state.id
+
   const fetchData = async () => {
     try {
       const response = await axios.get(
         `https://fakestoreapi.com/products/${location.state.id}`
       );
-      console.log(response.data);
       setAddKart(response.data);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
 
-  const navigate1 = useNavigate();
+  const navigate = useNavigate();
 
   const handleOrderNow = (id) => {
-    navigate1("/OderNow", { state: { Oder: id } });
-    console.log(id);
+    // Redirect to Order Now page
+    // navigate("/Quanties", { state: { order: id } });
+    navigate(`/Quanties/${id}`);
   };
-  const handleQuantityChange = (event) => {
-    const selectedQuantity = event.target.value;
-    console.log(selectedQuantity);
 
-    setQuantity(selectedQuantity);
-    // setPrice(selectedQuantity * show.price);
-    console.log(parseInt(quantity));
-    console.log(addKart.price);
+  const handleAddToCart = (id) => {
+    // Implement add to cart functionality here
+    console.log("Product added to cart:", addKart);
+    // You can redirect to the cart page or display a success message
+  };
+
+  const handleQuantityChange = (event) => {
+    setQuantity(event.target.value);
   };
 
   return (
-    <>
-      {/* <div className="card" style="width: 18rem;">
-        <img src="..." className="card-img-top" alt="..." />
-        <div className="card-body">
-          <h5 className="card-title">Card title</h5>
-          <p className="card-text">
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </p>
-          <a href="#" className="btn btn-primary">
-            Go somewhere
-          </a>
-        </div>
-      </div> */}
-      <Card sx={{ maxWidth: 1000 }}>
+    <Box display="flex" justifyContent="center" alignItems="center">
+      <Card
+        sx={{
+          maxWidth: 800,
+          width: "90%",
+          my: 4,
+          border: "2px solid #64b5f6",
+          borderRadius: "10px",
+        }}
+      >
         <CardMedia
           component="img"
-          alt="green iguana"
+          alt="Product Image"
           height="250"
           image={addKart.image}
           style={{
-            marginTop: "50px",
-            borderRadius: "10px",
             objectFit: "contain",
-            backgroundRepeat: "no-repeat  ",
           }}
         />
         <CardContent>
@@ -86,38 +76,37 @@ const Addcart = () => {
             {addKart.description}
           </Typography>
         </CardContent>
-        <CardActions>
-          <Button variant="outlined" size="small">
+        <CardActions sx={{ justifyContent: "space-between" }}>
+          <Button
+            onClick={() => handleOrderNow(addKart.id)}
+            variant="outlined"
+            size="small"
+          >
             Order Now
           </Button>
-          <Typography>
-            <li>
-              <img style={{ width: "200px" }}></img>
-              <h3></h3>
-              <p></p>
-              <h4>M.R.P ${addKart.price * quantity}</h4>
-              <label for="cars">quantity</label>
-              &nbsp;
-              <select
-                name="number"
-                id="num"
+          <Box display="flex" alignItems="center">
+            <Typography variant="h6" mr={2}>
+              M.R.P ${addKart.price * quantity}
+            </Typography>
+            <FormControl sx={{ minWidth: 80, flexGrow: 1 }}>
+              lo <InputLabel id="quantity-label">Quantity</InputLabel>
+              <Select
+                labelId="quantity-label"
+                id="quantity"
                 value={quantity}
                 onChange={handleQuantityChange}
+                native // Use native select to prevent overflow
               >
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-                <option value={6}>6</option>
-                <option value={7}>7</option>
-              </select>
-            </li>
-          </Typography>
+                {[1, 2, 3, 4, 5, 6, 7].map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
           <Button
-            onClick={() => {
-              handleOrderNow(addKart.id);
-            }}
+            onClick={() => handleAddToCart(addKart.id)}
             variant="contained"
             size="small"
           >
@@ -125,8 +114,100 @@ const Addcart = () => {
           </Button>
         </CardActions>
       </Card>
-    </>
+    </Box>
   );
 };
 
 export default Addcart;
+
+// import React, { useState, useEffect } from "react";
+// import { useLocation, useNavigate } from "react-router-dom";
+
+// // import "./product.css";
+// // import { useNavigate } from 'react-router-dom';
+
+// function Addcart() {
+//   // const values = JSON.parse(localStorage.getItem("values")) || [];
+
+//   const [cart, setCart] = useState([]);
+//   const [count, setCount] = useState(1);
+//   // const [add, setAdd] = useState("");
+//   const location = useLocation();
+
+//   // const [Id, setId] = useState([]);
+//   // const navigate = useNavigate();
+//   // let {id} =  useParams()
+//   // console.log(param,"aa")
+//   useEffect(() => {
+//     fetch(`https://fakestoreapi.com/products/${location.state.id}`)
+//       .then((res) => {
+//         return res.json();
+//       })
+//       .then((data) => {
+//         console.log(data, "kkk");
+//         setCart([data]);
+//       })
+//       .catch((error) => console.error(error));
+//   }, []);
+
+//   // console.log(values);
+
+//   //   const handleClick = (id) => {
+//   //     navigate(/addtocart/${id});
+//   // }
+
+//   const handleQuantityInc = () => {
+//     setCount(count + 1);
+//   };
+
+//   const handleQuantityDec = () => {
+//     setCount(count - 1);
+//   };
+
+//   const handleRemove = (id) => {
+//     setCart(cart.filter((Id) => Id !== id));
+//     // navigate(/fake)
+//   };
+//   // const handleAdd = (id) => {
+//   //   navigate(/fake)
+//   // }
+//   return (
+//     <div className="test">
+//       <div className="">
+//         {cart.map((val) => (
+//           <li key={val.id}>
+//             <h1> {val.id}</h1>
+//             <img
+//               //onClick={() => handleClick(val.id)}
+//               src={val.image}
+//               width={100}
+//             />
+//             <h3> {val.title}</h3>
+//             <h3 style={{ color: "red" }}>Price:{val.price * count}</h3>
+//             {/* <h3>About:{val.description}</h3> */}
+//             {/* <h3 style={{color: "teal"}}>Rating:{val.rating.rate}</h3>
+//         <h3>count:{val.rating.count}</h3> */}
+//             <h3> Quantity: {count} </h3>
+//             <button onClick={handleQuantityInc}> + </button>
+//             <button onClick={handleQuantityDec}> - </button>
+//             <button
+//               style={{ color: "green" }}
+//               //onClick={() => handleClick(val.id)}
+//             >
+//               Proceed to buy
+//             </button>
+//             <button
+//               style={{ color: "red" }}
+//               onClick={() => handleRemove(val.id)}
+//             >
+//               Remove
+//             </button>
+//             {/* <button style={{color:"blue"}} onClick={()=>handleAdd(val.id)}>Add items</button> */}
+//           </li>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Addcart;
