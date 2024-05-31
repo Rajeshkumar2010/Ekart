@@ -22,7 +22,7 @@ const Task = () => {
     e.preventDefault();
     console.log("email password : ", email, password);
     axios
-      .post("https://dummyjson.com/auth/login", { username: email, password })
+      .post(" 0", { username: email, password })
       .then((res) => console.log(res.data))
       .catch((err) => console.log(err));
     setEmail("");

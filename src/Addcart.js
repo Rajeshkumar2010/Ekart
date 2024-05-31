@@ -6,12 +6,15 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
 
 const Addcart = () => {
-  const [addKart, setAddKart] = useState({});
+  const [addKart, setAddKart] = useState([{}]);
   const [quantity, setQuantity] = useState(1);
+  const [price, setPrice] = useState(addKart.price);
 
   const location = useLocation();
 
@@ -44,10 +47,34 @@ const Addcart = () => {
     // You can redirect to the cart page or display a success message
   };
 
-  const handleQuantityChange = (event) => {
-    setQuantity(event.target.value);
-  };
+  // const handleQuantityChange = (event) => {
+  //   setQuantity(event.target.value);
+  // };
+  function handleClick() {
+    const values = JSON.parse(localStorage.getItem("Carts") || "[]");
 
+    values.push({
+      image: addKart.image,
+      title: addKart.title,
+      description: addKart.description,
+      price: quantity === 1 ? addKart.price : price,
+      quantity: quantity,
+    });
+    // console.log(Raju);
+    localStorage.setItem("Carts", JSON.stringify(values));
+    navigate("/OrderNow");
+  }
+  const handleQuantityChange = (event) => {
+    const selectedQuantity = parseInt(event.target.value);
+    setQuantity(selectedQuantity);
+    setPrice(selectedQuantity * addKart.price);
+  };
+  // const values = JSON.parse(localStorage.getItem("Carts") || "[]");
+  // const existingUser = values.find((user) => user.title === inputData.title);
+  // if (existingUser) {
+  //   toast.error("Email already exists");
+  //   return;
+  // }
   return (
     <Box display="flex" justifyContent="center" alignItems="center">
       <Card
@@ -95,6 +122,7 @@ const Addcart = () => {
                 id="quantity"
                 value={quantity}
                 onChange={handleQuantityChange}
+                // onChange={handleQuantityChange1}
                 native // Use native select to prevent overflow
               >
                 {[1, 2, 3, 4, 5, 6, 7].map((num) => (
@@ -106,7 +134,7 @@ const Addcart = () => {
             </FormControl>
           </Box>
           <Button
-            onClick={() => handleAddToCart(addKart.id)}
+            onClick={() => handleClick(addKart.id)}
             variant="contained"
             size="small"
           >
